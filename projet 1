@@ -1,0 +1,325 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define MAX_PATIENTS 100
+#define MAX_DOCTEURS 50
+#define MAX_RENDEZVOUS 200
+
+typedef struct {
+    int id;
+    char nom[50];
+    int age;
+    char sexe[10];
+    char historiqueMedical[200];
+} Patient;
+
+typedef struct {
+    int id;
+    char nom[50];
+    char specialisation[50];
+} Docteur;
+
+typedef struct {
+    int id;
+    int patientId;
+    int docteurId;
+    char date[20];
+    char heure[10];
+} RendezVous;
+
+Patient patients[MAX_PATIENTS];
+Docteur docteurs[MAX_DOCTEURS];
+RendezVous rendezVous[MAX_RENDEZVOUS];
+
+int compteurPatients = 0;
+int compteurDocteurs = 0;
+int compteurRendezVous = 0;
+
+// Fonction pour ajouter un patient
+void ajouterPatient() {
+    if (compteurPatients >= MAX_PATIENTS) {
+        printf("Nombre maximum de patients atteint.\n");
+        return;
+    }
+
+    Patient nouveauPatient;
+    nouveauPatient.id = compteurPatients + 1;
+
+    printf("Entrez le nom du patient: ");
+    scanf("%s", nouveauPatient.nom);
+    printf("Entrez l'age du patient: ");
+    scanf("%d", &nouveauPatient.age);
+    printf("Entrez le sexe du patient: ");
+    scanf("%s", nouveauPatient.sexe);
+    printf("Entrez l'historique medical: ");
+    scanf("%s", nouveauPatient.historiqueMedical);
+
+    patients[compteurPatients++] = nouveauPatient;
+    printf("Patient ajoute avec succes avec l'ID: %d\n", nouveauPatient.id);
+}
+
+// Fonction pour lister les patients
+void listerPatients() {
+    int i;
+    printf("Liste des patients:\n");
+    for (i = 0; i < compteurPatients; i++) {
+        printf("ID: %d, Nom: %s, Age: %d, Sexe: %s, Historique Medical: %s\n",
+               patients[i].id, patients[i].nom, patients[i].age, patients[i].sexe, patients[i].historiqueMedical);
+    }
+}
+
+// Fonction pour modifier un patient
+void modifierPatient() {
+    int id, i;
+    printf("Entrez l'ID du patient a modifier: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurPatients; i++) {
+        if (patients[i].id == id) {
+            printf("Entrez le nouveau nom du patient: ");
+            scanf("%s", patients[i].nom);
+            printf("Entrez le nouvel age du patient: ");
+            scanf("%d", &patients[i].age);
+            printf("Entrez le nouveau sexe du patient: ");
+            scanf("%s", patients[i].sexe);
+            printf("Entrez le nouvel historique medical: ");
+            scanf("%s", patients[i].historiqueMedical);
+            printf("Patient modifie avec succes.\n");
+            return;
+        }
+    }
+    printf("Patient avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour supprimer un patient
+void supprimerPatient() {
+    int id, i, j;
+    printf("Entrez l'ID du patient a supprimer: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurPatients; i++) {
+        if (patients[i].id == id) {
+            for (j = i; j < compteurPatients - 1; j++) {
+                patients[j] = patients[j + 1];
+            }
+            compteurPatients--;
+            printf("Patient supprime avec succes.\n");
+            return;
+        }
+    }
+    printf("Patient avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour ajouter un docteur
+void ajouterDocteur() {
+    if (compteurDocteurs >= MAX_DOCTEURS) {
+        printf("Nombre maximum de docteurs atteint.\n");
+        return;
+    }
+
+    Docteur nouveauDocteur;
+    nouveauDocteur.id = compteurDocteurs + 1;
+
+    printf("Entrez le nom du docteur: ");
+    scanf("%s", nouveauDocteur.nom);
+    printf("Entrez la specialisation du docteur: ");
+    scanf("%s", nouveauDocteur.specialisation);
+
+    docteurs[compteurDocteurs++] = nouveauDocteur;
+    printf("Docteur ajoute avec succes avec l'ID: %d\n", nouveauDocteur.id);
+}
+
+// Fonction pour lister les docteurs
+void listerDocteurs() {
+    int i;
+    printf("Liste des docteurs:\n");
+    for (i = 0; i < compteurDocteurs; i++) {
+        printf("ID: %d, Nom: %s, Specialisation: %s\n",
+               docteurs[i].id, docteurs[i].nom, docteurs[i].specialisation);
+    }
+}
+
+// Fonction pour modifier un docteur
+void modifierDocteur() {
+    int id, i;
+    printf("Entrez l'ID du docteur a modifier: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurDocteurs; i++) {
+        if (docteurs[i].id == id) {
+            printf("Entrez le nouveau nom du docteur: ");
+            scanf("%s", docteurs[i].nom);
+            printf("Entrez la nouvelle specialisation du docteur: ");
+            scanf("%s", docteurs[i].specialisation);
+            printf("Docteur modifie avec succes.\n");
+            return;
+        }
+    }
+    printf("Docteur avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour supprimer un docteur
+void supprimerDocteur() {
+    int id, i, j;
+    printf("Entrez l'ID du docteur a supprimer: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurDocteurs; i++) {
+        if (docteurs[i].id == id) {
+            for (j = i; j < compteurDocteurs - 1; j++) {
+                docteurs[j] = docteurs[j + 1];
+            }
+            compteurDocteurs--;
+            printf("Docteur supprime avec succes.\n");
+            return;
+        }
+    }
+    printf("Docteur avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour ajouter un rendez-vous
+void ajouterRendezVous() {
+    if (compteurRendezVous >= MAX_RENDEZVOUS) {
+        printf("Nombre maximum de rendez-vous atteint.\n");
+        return;
+    }
+
+    RendezVous nouveauRendezVous;
+    nouveauRendezVous.id = compteurRendezVous + 1;
+
+    printf("Entrez l'ID du patient: ");
+    scanf("%d", &nouveauRendezVous.patientId);
+    printf("Entrez l'ID du docteur: ");
+    scanf("%d", &nouveauRendezVous.docteurId);
+    printf("Entrez la date du rendez-vous (AAAA-MM-JJ): ");
+    scanf("%s", nouveauRendezVous.date);
+    printf("Entrez l'heure du rendez-vous (HH:MM): ");
+    scanf("%s", nouveauRendezVous.heure);
+
+    rendezVous[compteurRendezVous++] = nouveauRendezVous;
+    printf("Rendez-vous ajoute avec succes avec l'ID: %d\n", nouveauRendezVous.id);
+}
+
+// Fonction pour lister les rendez-vous
+void listerRendezVous() {
+    int i;
+    printf("Liste des rendez-vous:\n");
+    for (i = 0; i < compteurRendezVous; i++) {
+        printf("ID: %d, ID du patient: %d, ID du docteur: %d, Date: %s, Heure: %s\n",
+               rendezVous[i].id, rendezVous[i].patientId, rendezVous[i].docteurId,
+               rendezVous[i].date, rendezVous[i].heure);
+    }
+}
+
+// Fonction pour modifier un rendez-vous
+void modifierRendezVous() {
+    int id, i;
+    printf("Entrez l'ID du rendez-vous a modifier: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurRendezVous; i++) {
+        if (rendezVous[i].id == id) {
+            printf("Entrez la nouvelle date du rendez-vous (AAAA-MM-JJ): ");
+            scanf("%s", rendezVous[i].date);
+            printf("Entrez la nouvelle heure du rendez-vous (HH:MM): ");
+            scanf("%s", rendezVous[i].heure);
+            printf("Rendez-vous modifie avec succes.\n");
+            return;
+        }
+    }
+    printf("Rendez-vous avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour supprimer un rendez-vous
+void supprimerRendezVous() {
+    int id, i, j;
+    printf("Entrez l'ID du rendez-vous a supprimer: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < compteurRendezVous; i++) {
+        if (rendezVous[i].id == id) {
+            for (j = i; j < compteurRendezVous - 1; j++) {
+                rendezVous[j] = rendezVous[j + 1];
+            }
+            compteurRendezVous--;
+            printf("Rendez-vous supprime avec succes.\n");
+            return;
+        }
+    }
+    printf("Rendez-vous avec l'ID %d non trouve.\n", id);
+}
+
+// Fonction pour afficher le menu principal
+void menu() {
+    int choix;
+
+    do {
+        printf("\nSysteme de Gestion d'Hopital\n");
+        printf("1. Ajouter Patient\n");
+        printf("2. Lister Patients\n");
+        printf("3. Modifier Patient\n");
+        printf("4. Supprimer Patient\n");
+        printf("5. Ajouter Docteur\n");
+        printf("6. Lister Docteurs\n");
+        printf("7. Modifier Docteur\n");
+        printf("8. Supprimer Docteur\n");
+        printf("9. Ajouter Rendez-vous\n");
+        printf("10. Lister Rendez-vous\n");
+        printf("11. Modifier Rendez-vous\n");
+        printf("12. Supprimer Rendez-vous\n");
+        printf("0. Quitter\n");
+        printf("Entrez votre choix: ");
+        scanf("%d", &choix);
+
+        switch (choix) {
+            case 1:
+                ajouterPatient();
+                break;
+            case 2:
+                listerPatients();
+                break;
+            case 3:
+                modifierPatient();
+                break;
+            case 4:
+                supprimerPatient();
+                break;
+            case 5:
+                ajouterDocteur();
+                break;
+            case 6:
+                listerDocteurs();
+                break;
+            case 7:
+                modifierDocteur();
+                break;
+            case 8:
+                supprimerDocteur();
+                break;
+            case 9:
+                ajouterRendezVous();
+                break;
+            case 10:
+                listerRendezVous();
+                break;
+            case 11:
+                modifierRendezVous();
+                break;
+            case 12:
+                supprimerRendezVous();
+                break;
+            case 0:
+                printf("Sortie...\n");
+                break;
+            default:
+                printf("Choix invalide! Veuillez reessayer.\n");
+        }
+    } while (choix != 0);
+}
+
+// Fonction principale
+int main() {
+    menu();
+    return 0;
+}
